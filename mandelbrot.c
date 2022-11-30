@@ -9,15 +9,18 @@ int N = 255; //number of iteration in the set
 
 FILE* pgmimg; //declaration of img file
 
-complex fz(complex z,complex c){ //function of mandelbrot set
+complex fz(complex z,complex c) //function of mandelbrot set
+{
     complex a = z*z + c;
     return(a);
 }
 
-int mandelbrotPoint(complex z, complex c){
+int mandelbrotPoint(complex z, complex c)
+{
 
     int a = 0;
-    for (int i = 0; i < N; i++){ //define a value between 0 and 255, 0 if it is in the set, >=1 if it is not
+    for (int i = 0; i < N; i++) //define a value between 0 and 255, 0 if it is in the set, >=1 if it is not
+    {
         z = fz(z,c);
         if (cabs(z) < 4)
             a = 255-i;
@@ -28,9 +31,14 @@ int mandelbrotPoint(complex z, complex c){
 }
 
 int main() {
-    int dim;
-    printf("Enter a picture size: ");
-    scanf("%d", &dim);
+    int dim = 0;
+    while (dim < 100)
+    {
+        printf("Enter a picture size: ");
+        scanf("%d", &dim);
+        if (dim < 100)
+            printf("error: cannot generate a picture smaller than 100x100\n");
+    }
     clock_t begin = clock();
     double points = (double) dim; //casting to a double to calculate in double value
 
@@ -39,15 +47,22 @@ int main() {
 
     int **image;
     image = (int**)malloc(sizeof(int*)*dim);
+    if (!image)
+        printf("error: out of memory");
     for (int i = 0; i < dim; i++)
+    {
         image[i] = (int*)malloc(sizeof(int)*dim);
+        if (!image[i])
+            printf("error: out of memory");
+    }
 
 /*****************************************************************************************/
     printf("computing picture:\n");
 
-    for (int a = 0; a < points; a++){
-        for (int b = 0; b < points; b++){ //calculate each pixel from top left to bottom right
-
+    for (int a = 0; a < points; a++)
+    {
+        for (int b = 0; b < points; b++) //calculate each pixel from top left to bottom right
+        {
             double x = (a/(points/3))-2; //convert pixel position to cartesian position in mandelbrot set
             double y = (b/(points/3))-1.5;
 
@@ -71,9 +86,10 @@ int main() {
     
     int count = 0; 
     
-    for (int i = 0; i < dim; i++) { 
-        for (int j = 0; j < dim; j++) { 
-            
+    for (int i = 0; i < dim; i++)
+    { 
+        for (int j = 0; j < dim; j++)
+        {    
             int temp = image[i][j]; 
             fprintf(pgmimg, "%d ", temp); 
 
